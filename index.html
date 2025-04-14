@@ -32,24 +32,22 @@
 <body onload="timetable()">
   <h1>Órarend szerkesztése</h1>
 
-  <form id="timetableForm">
-    <table id="orarend">
-      <tr>
-        <th>Hétfő</th>
-        <th>Kedd</th>
-        <th>Szerda</th>
-        <th>Csütörtök</th>
-        <th>Péntek</th>
-      </tr>
-      <!-- JS tölti fel -->
-    </table>
-  </form>
+  <table id="orarend">
+    <tr>
+      <th>Hétfő</th>
+      <th>Kedd</th>
+      <th>Szerda</th>
+      <th>Csütörtök</th>
+      <th>Péntek</th>
+    </tr>
+    <!-- JS tölti fel -->
+  </table>
 
   <div class="center">
     <h3>Óra törlése</h3>
     <input type="text" id="deleteNap" placeholder="Nap (pl:. Kedd)" />
     <input type="number" id="deleteOra" placeholder="Óraszám (1-9)" />
-    <button onclick="torolOra()">Törlés</button>
+    <button onclick="torol()">Törlés</button>
 
     <h3>Nap óráinak törlése</h3>
     <input type="text" id="deleteNapTeljes" placeholder="Nap (pl:. Kedd)">
@@ -57,12 +55,10 @@
 
     <h3>Óra szerkesztése</h3>
     <input type="text" id="editNap" placeholder="Nap (pl. Kedd)" />
-    <input type="number" id="editOra" placeholder="Óraszám (1-9)" min="1" max="9" />
-    <input type="text" id="editTantargy" placeholder="Új tantárgy" />
+    <input type="number" id="editOra" placeholder="Óraszám (1-9)" />
+    <input type="text" id="editTantargy" placeholder="Tantárgy" />
     <button onclick="szerkeszt()">Szerkesztés</button>
-    
-    <h3>Mentés</h3>
-    <button type="submit">Minden mentése</button>
+  
   </div>
 
   <script>
@@ -71,7 +67,7 @@
     async function timetable() {
       const napok = ["Hétfő", "Kedd", "Szerda", "Csütörtök", "Péntek"];
       const response = await fetch("http://localhost:3000/timetable");
-      adat = await response.json(); // mentés a globális változóba
+      adat = await response.json();
 
       const table = document.getElementById("orarend");
       while (table.rows.length > 1) table.deleteRow(1);
@@ -80,48 +76,19 @@
         const tr = document.createElement("tr");
         for (let j of napok) {
           const td = document.createElement("td");
-          let tanora = adat.find(d => d.day == j);
-          const input = document.createElement("input");
-          if (tanora) {
-            input.value = tanora[`ora${i}`];
-          } else {
-            input.value = "";
+          const tanora = adat.find(d => d.day == j);
+          let value = "";
+          if (tanora && tanora[`ora${i}`]) {
+            value = tanora[`ora${i}`];
           }
-          input.dataset.day = j;
-          input.dataset.ora = `ora${i}`;
-          td.appendChild(input);
+          const span = document.createElement("span");
+          span.textContent = value;
+          td.appendChild(span);
           tr.appendChild(td);
         }
         table.appendChild(tr);
       }
     }
-
-    document.getElementById("timetableForm").addEventListener("submit", async (e) => {
-      e.preventDefault(); // no resi
-      const inputs = document.querySelectorAll("input[data-day]"); //input.dataset.day = j;
-      const tomb = {};
-
-      inputs.forEach(input => {
-        const nap = input.dataset.day;
-        const ora = input.dataset.ora;
-        if (!tomb[nap]) tomb[nap] = { day: nap };
-        tomb[nap][ora] = input.value;
-      });
-
-      const putes = await fetch("http://localhost:3000/timetable").then(res => res.json());
-
-      for (const x of Object.values(tomb)) {
-        let tanora2 = putes.find(d => d.day == x.day);
-        if (tanora2) {
-          await fetch(`http://localhost:3000/timetable/${tanora2.id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(x)
-          });
-        }
-      }
-      alert("Sikeres mentés!");
-    });
 
     async function torol() {
       const nap = document.getElementById("deleteNap").value;
@@ -137,7 +104,7 @@
         return;
       }
 
-      tanora[`ora${oraSzam}`] = ""; //töröl
+      tanora[`ora${oraSzam}`] = ""; // törlés
 
       await fetch(`http://localhost:3000/timetable/${tanora.id}`, {
         method: "PUT",
@@ -145,8 +112,8 @@
         body: JSON.stringify(tanora)
       });
 
-      alert(`${nap} ${oraSzam}. törölve!`);
-      timetable(); //újratölt
+      alert(`${nap} ${oraSzam}. óra törölve!`);
+      timetable();
     }
 
     async function torolNap() {
@@ -162,18 +129,19 @@
         alert("Rossz adat.");
         return;
       }
+
       await fetch(`http://localhost:3000/timetable/${napAdat.id}`, {
         method: "DELETE"
       });
 
       alert(`${nap} törölve!`);
-      timetable(); // újratöltés
+      timetable();
     }
 
     async function szerkeszt() {
-      const nap = document.getElementById("editNap").value.trim();
+      const nap = document.getElementById("editNap").value;
       const oraSzam = parseInt(document.getElementById("editOra").value);
-      const tantargy = document.getElementById("editTantargy").value.trim();
+      const tantargy = document.getElementById("editTantargy").value;
 
       if (!nap || isNaN(oraSzam) || oraSzam < 1 || oraSzam > 9 || !tantargy) {
         alert("Rossz adat!");
@@ -182,7 +150,7 @@
 
       const tanora = adat.find(d => d.day == nap);
       if (!tanora) {
-        alert("Ilyen nap nincs az adatbázisban!");
+        alert("Rossz lekérés!");
         return;
       }
 
@@ -194,8 +162,8 @@
         body: JSON.stringify(tanora)
       });
 
-      alert(`${nap} ${oraSzam}. óra sikeresen módosítva!`);
-      timetable(); // Frissítjük az órarendet
+      alert(`${nap} ${oraSzam}. módosítva!`);
+      timetable();
     }
   </script>
 </body>
