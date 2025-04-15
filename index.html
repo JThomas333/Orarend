@@ -6,26 +6,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Órarend</title>
   <style>
-    table {
-      border-collapse: collapse;
-      width: 100%;
+    body{
+      background-color: bisque;
     }
+   table{
+    margin: auto;
+    width: 300px;
+    height: 500px;
+    background-color: lightgoldenrodyellow;
+    font-size: 20px;
+   }
 
     th,
     td {
-      border: 1px solid #ccc;
-      padding: 6px;
+      border: 2px solid black;
+      padding: 10px;
       text-align: center;
     }
 
     h1 {
       text-align: center;
+      font-size: 30px;
     }
 
-    .center {
+    .container {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+      gap: 20px;
       text-align: center;
-      margin-top: 20px;
+      
     }
+
+    #elso,
+    #mas,
+    #harm{
+      background-color: white;
+    border: 2px solid black;
+    padding: 10px;
+    width: 200px;
+    }
+    button {
+      margin-top: 10px;
+    }
+    input {
+      margin-top: 5px;
+    }
+
+
   </style>
 </head>
 
@@ -39,30 +67,38 @@
       <th>Szerda</th>
       <th>Csütörtök</th>
       <th>Péntek</th>
+      <th>Óra</th>
     </tr>
-    <!-- JS tölti fel -->
+    
   </table>
-
-  <div class="center">
+<div class="container">
+  <div id="elso">
     <h3>Óra törlése</h3>
     <input type="text" id="deleteNap" placeholder="Nap (pl:. Kedd)" />
+    <br>
     <input type="number" id="deleteOra" placeholder="Óraszám (1-9)" />
+    <br>
     <button onclick="torol()">Törlés</button>
-
+  </div>
+  <div id="mas">
     <h3>Nap óráinak törlése</h3>
     <input type="text" id="deleteNapTeljes" placeholder="Nap (pl:. Kedd)">
+    <br>
     <button onclick="torolNap()">Teljes nap törlése</button>
-
+  </div>
+  <div id="harm">
     <h3>Óra szerkesztése</h3>
     <input type="text" id="editNap" placeholder="Nap (pl. Kedd)" />
+    <br>
     <input type="number" id="editOra" placeholder="Óraszám (1-9)" />
+    <br>
     <input type="text" id="editTantargy" placeholder="Tantárgy" />
+    <br>
     <button onclick="szerkeszt()">Szerkesztés</button>
-  
   </div>
-
+</div>
   <script>
-    let adat = []; // globálisan elérhető adatok
+    let adat = [];
 
     async function timetable() {
       const napok = ["Hétfő", "Kedd", "Szerda", "Csütörtök", "Péntek"];
@@ -86,6 +122,11 @@
           td.appendChild(span);
           tr.appendChild(td);
         }
+
+        const oraCell = document.createElement("td");
+        oraCell.textContent = i;
+        tr.appendChild(oraCell);
+
         table.appendChild(tr);
       }
     }
@@ -104,7 +145,7 @@
         return;
       }
 
-      tanora[`ora${oraSzam}`] = ""; // törlés
+      tanora[`ora${oraSzam}`] = "";
 
       await fetch(`http://localhost:3000/timetable/${tanora.id}`, {
         method: "PUT",

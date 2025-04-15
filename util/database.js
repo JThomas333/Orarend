@@ -33,11 +33,11 @@ export function dbAll(sql, params = []) {
       "CREATE TABLE IF NOT EXISTS timetable (id INTEGER PRIMARY KEY AUTOINCREMENT, day STRING, ora1 STRING, ora2 STRING, ora3 STRING, ora4 STRING, ora5 STRING, ora6 STRING, ora7 STRING, ora8 STRING, ora9 STRING);"
     );
     const timetable = [
-        {day: 'Hétfő', ora1: 'Kűrt', ora2: 'Nagybőgő', ora3: 'Angol', ora4: 'Töri', ora5: 'Tesi', ora6: 'Biosz', ora7: 'Matek', ora8: 'Latex', ora9: '-'},
-        {day: 'Kedd', ora1: 'Dobb', ora2: 'Lant', ora3: 'Angol', ora4: 'Matek', ora5: 'Tesi', ora6: 'Fizika', ora7: 'Matek', ora8: 'Infó', ora9: '-'},
-        {day: 'Szerda', ora1: 'Dance', ora2: 'Hegedű', ora3: 'Angol', ora4: 'Matek', ora5: 'Tesi', ora6: 'Fizika', ora7: 'Matek', ora8: 'Infó', ora9: '-'},
-        {day: 'Csütörtök', ora1: 'Zene', ora2: 'Klarinét', ora3: 'Angol', ora4: 'Matek', ora5: 'Tesi', ora6: 'Fizika', ora7: 'Matek', ora8: 'Infó', ora9: '-'},
-        {day: 'Péntek', ora1: 'Fishing', ora2: 'Cselló', ora3: 'Angol', ora4: 'Matek', ora5: 'Tesi', ora6: 'Fizika', ora7: 'Matek', ora8: 'Infó', ora9: '-'},
+        {day: 'Hétfő', ora1: 'Kűrt', ora2: 'Nagybőgő', ora3: 'Angol', ora4: 'Töri', ora5: 'Angol', ora6: 'Biosz', ora7: 'Matek', ora8: 'Irodalom', ora9: 'Nyelvtan'},
+        {day: 'Kedd', ora1: 'Dobb', ora2: 'Lant', ora3: 'Angol', ora4: 'Matek', ora5: 'Töri', ora6: 'Fizika', ora7: 'Tesi', ora8: 'Infó', ora9: 'Infó'},
+        {day: 'Szerda', ora1: 'Dance', ora2: 'Hegedű', ora3: 'Nyelvtan', ora4: 'Matek', ora5: 'Fizika', ora6: 'Fizika', ora7: 'Matek', ora8: 'Infó', ora9: 'Töri'},
+        {day: 'Csütörtök', ora1: 'Zene', ora2: 'Klarinét', ora3: 'Irodalom', ora4: 'Matek', ora5: 'Matek', ora6: 'Fizika', ora7: 'Matek', ora8: 'Infó', ora9: 'Fizika'},
+        {day: 'Péntek', ora1: 'Fishing', ora2: 'Cselló', ora3: 'Matek', ora4: 'Matek', ora5: 'Tesi', ora6: 'Fizika', ora7: 'Angol', ora8: 'Infó', ora9: 'Biosz'},
 
       ];
   
